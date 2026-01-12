@@ -232,7 +232,7 @@ ${mbti ? `**MBTI**: ${mbti}` : "**MBTI**: 모름 (사주만으로 분석)"}
 위 정보를 바탕으로 JSON 형식으로 응답해주세요.`;
 
     const response = await openai.chat.completions.create({
-      model: "gpt-4o",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
