@@ -1,0 +1,120 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css');
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Courier+Prime:wght@400;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  --background: #F4F4F0;
+  --foreground: #1A1A1A;
+  --accent: #FF3B30;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-mono: 'Space Mono', 'Courier Prime', 'Courier New', monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  letter-spacing: -0.5px;
+}
+
+/* 영수증 카드 효과 */
+.receipt-card {
+  position: relative;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
+  background-image: 
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.03) 2px,
+      rgba(0, 0, 0, 0.03) 4px
+    );
+}
+
+/* Zigzag Border - SVG 패턴 사용 */
+.receipt-zigzag-top {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,8 L10,0 L20,8 L30,0 L40,8 L40,16 L30,16 L20,8 L10,16 L0,16 Z' fill='%23F4F4F0'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: top;
+}
+
+.receipt-zigzag-bottom {
+  background-image: url("data:image/svg+xml,%3Csvg width='40' height='16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0,8 L10,16 L20,8 L30,16 L40,8 L40,0 L30,0 L20,8 L10,0 L0,0 Z' fill='%23F4F4F0'/%3E%3C/svg%3E");
+  background-repeat: repeat-x;
+  background-position: bottom;
+}
+
+/* 프린터 애니메이션 */
+@keyframes slide-up {
+  0% {
+    transform: translate(-50%, 0) rotate(-2deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 120px) rotate(2deg);
+    opacity: 0;
+  }
+}
+
+@keyframes slide-up-delayed {
+  0% {
+    transform: translate(-50%, -30px) rotate(2deg);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, 90px) rotate(-2deg);
+    opacity: 0;
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 2s ease-in-out infinite;
+}
+
+.animate-slide-up-delayed {
+  animation: slide-up-delayed 2s ease-in-out infinite 0.5s;
+}
+
+/* 텍스처 효과 */
+.receipt-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.02) 1px, transparent 0);
+  background-size: 20px 20px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* 폰트 적용 */
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* 영문/숫자에 모노스페이스 폰트 적용 */
+input[type="text"],
+input[type="number"],
+select {
+  font-variant-numeric: tabular-nums;
+}
