@@ -76,6 +76,9 @@ export default function Home() {
     setPageState("loading");
 
     try {
+      // 생년월일을 YYYY-MM-DD 형식으로 변환
+      const birthDate = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+      
       const response = await fetch("/api/analyze", {
         method: "POST",
         headers: {
@@ -83,13 +86,9 @@ export default function Home() {
         },
         body: JSON.stringify({
           name,
-          year,
-          month,
-          day,
-          isLunar,
+          birthDate,
           birthTime,
-          gender,
-          mbti,
+          mbti: mbti || null,
         }),
       });
 
@@ -102,6 +101,12 @@ export default function Home() {
 
       const data = await response.json();
       console.log("받은 데이터:", data);
+      console.log("receipt_header 존재:", !!data.receipt_header);
+      console.log("detail_analysis 존재:", !!data.detail_analysis);
+      
+      // 디버깅용 alert - API 응답을 받자마자 실행
+      alert("API 응답 받음:\n" + JSON.stringify(data, null, 2));
+      
       setResult(data);
       
       // 로딩 후 결과 페이지로
@@ -369,8 +374,14 @@ export default function Home() {
     );
   }
 
-  // 결과 페이지
-  if (pageState === "result" && result) {
+  // 결과 페이지 - 안전한 조건부 렌더링
+  if (pageState === "result" && result && (result.receipt_header || result.detail_analysis)) {
+    console.log("결과 페이지 렌더링:", { 
+      hasReceiptHeader: !!result.receipt_header, 
+      hasDetailAnalysis: !!result.detail_analysis,
+      result 
+    });
+    
     return (
       <div className="min-h-screen bg-[#F4F4F0] p-4 md:p-8 py-12">
         <div className="max-w-3xl mx-auto space-y-8">
@@ -413,14 +424,6 @@ export default function Home() {
                   <span className="font-bold text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>성별:</span>
                   <span className="font-mono">{gender}</span>
                 </div>
-                {result.saju && (
-                  <div className="flex justify-between">
-                    <span className="font-bold text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>일주:</span>
-                    <span className="font-mono bg-[#FF3B30] text-white px-2 py-1 rounded">
-                      {result.saju.일주} ({result.saju.일주오행})
-                    </span>
-                  </div>
-                )}
                 {mbti && (
                   <div className="flex justify-between">
                     <span className="font-bold text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>MBTI:</span>
@@ -429,136 +432,150 @@ export default function Home() {
                 )}
               </div>
 
-              {/* 영수증 헤더 */}
-              {result.receipt?.receipt_header && (
+              {/* 영수증 헤더 - 안전한 조건부 렌더링 */}
+              {result && result.receipt_header && (
                 <div className="border-t-2 border-dashed border-gray-400 pt-4">
                   <div className="bg-[#FF3B30] text-white p-4 rounded-lg mb-4">
                     <div className="text-2xl font-bold mb-2" style={{ letterSpacing: "-0.5px" }}>
-                      {result.receipt.receipt_header.type_name}
+                      {result.receipt_header?.type_name || "타입명 없음"}
                     </div>
                     <div className="text-lg font-mono">
-                      {result.receipt.receipt_header.total_score}
+                      {result.receipt_header?.total_score || "평가 없음"}
                     </div>
                   </div>
                   
                   {/* 영수증 항목 */}
-                  <div className="space-y-2 mb-4">
-                    {result.receipt.receipt_header.items?.map((item: any, index: number) => (
-                      <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
-                        <span className="font-mono text-[#1A1A1A]">{item.name}</span>
-                        <div className="flex items-center gap-2">
-                          <span className="font-mono text-gray-600">Qty: {item.qty}</span>
-                          <span className="font-mono text-[#FF3B30] font-bold">{item.price}</span>
+                  {result.receipt_header?.items && result.receipt_header.items.length > 0 && (
+                    <div className="space-y-2 mb-4">
+                      {result.receipt_header.items.map((item: any, index: number) => (
+                        <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
+                          <span className="font-mono text-[#1A1A1A]">{item.name}</span>
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-gray-600">Qty: {item.qty}</span>
+                            <span className="font-mono text-[#FF3B30] font-bold">{item.price}</span>
+                          </div>
                         </div>
-                      </div>
-                    ))}
-                  </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
 
-              {/* 상세 분석 */}
-              {result.receipt?.detail_analysis && (
+              {/* 상세 분석 - 안전한 조건부 렌더링 */}
+              {result && result.detail_analysis && (
                 <div className="border-t-2 border-dashed border-gray-400 pt-4 space-y-4">
                   <h3 className="text-xl font-bold text-[#1A1A1A] mb-4" style={{ letterSpacing: "-0.5px" }}>
                     팩폭 상세
                   </h3>
                   
-                  {result.receipt.detail_analysis.headline && (
+                  {result.detail_analysis && result.detail_analysis.headline && (
                     <div className="bg-yellow-50 border-l-4 border-[#FF3B30] p-4 rounded">
                       <p className="font-bold text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.headline}
+                        {result.detail_analysis.headline}
                       </p>
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.pros && result.receipt.detail_analysis.pros.length > 0 && (
+                  {result.detail_analysis && result.detail_analysis.pros && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>장점 (칭찬인 척)</h4>
-                      <ul className="space-y-1">
-                        {result.receipt.detail_analysis.pros.map((pro: string, index: number) => (
-                          <li key={index} className="text-[#1A1A1A] flex items-start gap-2">
-                            <span className="text-[#FF3B30]">•</span>
-                            <span style={{ letterSpacing: "-0.5px" }}>{pro}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      {Array.isArray(result.detail_analysis.pros) ? (
+                        <ul className="space-y-1">
+                          {result.detail_analysis.pros.map((pro: string, index: number) => (
+                            <li key={index} className="text-[#1A1A1A] flex items-start gap-2">
+                              <span className="text-[#FF3B30]">•</span>
+                              <span style={{ letterSpacing: "-0.5px" }}>{pro}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
+                          {result.detail_analysis.pros}
+                        </p>
+                      )}
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.cons && result.receipt.detail_analysis.cons.length > 0 && (
+                  {result.detail_analysis && result.detail_analysis.cons && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>단점 (치부)</h4>
-                      <ul className="space-y-1">
-                        {result.receipt.detail_analysis.cons.map((con: string, index: number) => (
-                          <li key={index} className="text-[#1A1A1A] flex items-start gap-2">
-                            <span className="text-[#FF3B30]">•</span>
-                            <span style={{ letterSpacing: "-0.5px" }}>{con}</span>
-                          </li>
-                        ))}
-                      </ul>
+                      {Array.isArray(result.detail_analysis.cons) ? (
+                        <ul className="space-y-1">
+                          {result.detail_analysis.cons.map((con: string, index: number) => (
+                            <li key={index} className="text-[#1A1A1A] flex items-start gap-2">
+                              <span className="text-[#FF3B30]">•</span>
+                              <span style={{ letterSpacing: "-0.5px" }}>{con}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
+                          {result.detail_analysis.cons}
+                        </p>
+                      )}
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.career && (
+                  {result.detail_analysis && result.detail_analysis.career && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>직업 팩폭</h4>
                       <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.career}
+                        {result.detail_analysis.career}
                       </p>
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.money && (
+                  {result.detail_analysis && result.detail_analysis.money && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>소비 습관</h4>
                       <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.money}
+                        {result.detail_analysis.money}
                       </p>
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.love_flaw && (
+                  {result.detail_analysis && result.detail_analysis.love_flaw && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>연애 문제점</h4>
                       <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.love_flaw}
+                        {result.detail_analysis.love_flaw}
                       </p>
                     </div>
                   )}
 
                   <div className="grid grid-cols-2 gap-4">
-                    {result.receipt.detail_analysis.best_match && (
+                    {result.detail_analysis && result.detail_analysis.best_match && (
                       <div>
                         <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>잘 맞는 타입</h4>
                         <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                          {result.receipt.detail_analysis.best_match}
+                          {result.detail_analysis.best_match}
                         </p>
                       </div>
                     )}
-                    {result.receipt.detail_analysis.worst_match && (
+                    {result.detail_analysis && result.detail_analysis.worst_match && (
                       <div>
                         <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>안 맞는 타입</h4>
                         <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                          {result.receipt.detail_analysis.worst_match}
+                          {result.detail_analysis.worst_match}
                         </p>
                       </div>
                     )}
                   </div>
 
-                  {result.receipt.detail_analysis.healing && (
+                  {result.detail_analysis && result.detail_analysis.healing && (
                     <div>
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>스트레스 해소법</h4>
                       <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.healing}
+                        {result.detail_analysis.healing}
                       </p>
                     </div>
                   )}
 
-                  {result.receipt.detail_analysis.year_2026 && (
+                  {result.detail_analysis && result.detail_analysis.year_2026 && (
                     <div className="bg-gray-50 border border-gray-300 p-4 rounded">
                       <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>2026년 운세</h4>
                       <p className="text-[#1A1A1A]" style={{ letterSpacing: "-0.5px" }}>
-                        {result.receipt.detail_analysis.year_2026}
+                        {result.detail_analysis.year_2026}
                       </p>
                     </div>
                   )}
