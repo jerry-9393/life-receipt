@@ -529,7 +529,7 @@ export default function Home() {
 
                   {result.detail_analysis && result.detail_analysis.pros && (
                     <div>
-                      <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>장점 (칭찬인 척)</h4>
+                      <h4 className="font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>장점 </h4>
                       {Array.isArray(result.detail_analysis.pros) ? (
                         <ul className="space-y-1">
                           {result.detail_analysis.pros.map((pro: string, index: number) => (
