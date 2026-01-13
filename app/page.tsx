@@ -193,7 +193,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 tracking-tight" style={{ letterSpacing: "-0.5px" }}>
-              님 인생 견적 뽑아드림. 팩트로만.
+              사주+MBTI 분석석
             </h1>
           </div>
 
@@ -432,7 +432,7 @@ export default function Home() {
               {/* 헤더 */}
               <div className="text-center border-b-2 border-dashed border-gray-400 pb-4">
                 <h2 className="text-3xl font-bold text-[#1A1A1A] mb-2 font-mono" style={{ letterSpacing: "-0.5px" }}>
-                  인생 견적서
+                  사주+MBTI 분석
                 </h2>
                 <p className="text-sm text-gray-600 font-mono">
                   {new Date().toLocaleDateString("ko-KR", { year: "numeric", month: "2-digit", day: "2-digit" })}

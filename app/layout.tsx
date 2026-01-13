@@ -13,8 +13,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "인생 견적서",
-  description: "님 인생 견적 뽑아드림. 팩트로만.",
+  title: "사주+MBTI 분석",
+  description: "내 사주와 MBTI로 보는 성격 분석 결과",
 };
 
 export default function RootLayout({
