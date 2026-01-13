@@ -444,12 +444,20 @@ export default function Home() {
                   {/* 영수증 항목 */}
                   {result.receipt_header?.items && result.receipt_header.items.length > 0 && (
                     <div className="space-y-2 mb-4">
+                      {/* 헤더 */}
+                      <div className="flex justify-between items-center border-b-2 border-gray-300 pb-2 font-bold">
+                        <span className="font-mono text-[#1A1A1A]">항목</span>
+                        <div className="flex items-center gap-4">
+                          <span className="font-mono text-gray-600">등급</span>
+                          <span className="font-mono text-gray-600">비고</span>
+                        </div>
+                      </div>
                       {result.receipt_header.items.map((item: any, index: number) => (
                         <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
                           <span className="font-mono text-[#1A1A1A]">{item.name}</span>
-                          <div className="flex items-center gap-2">
-                            <span className="font-mono text-gray-600">Qty: {item.qty}</span>
-                            <span className="font-mono text-[#FF3B30] font-bold">{item.price}</span>
+                          <div className="flex items-center gap-4">
+                            <span className="font-mono text-gray-600">{item.qty}</span>
+                            <span className="font-mono text-[#FF3B30] font-bold whitespace-nowrap">{item.price}</span>
                           </div>
                         </div>
                       ))}
