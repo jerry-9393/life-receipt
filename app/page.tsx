@@ -455,20 +455,16 @@ export default function Home() {
                   {result.receipt_header?.items && result.receipt_header.items.length > 0 && (
                     <div className="space-y-2 mb-4">
                       {/* 헤더 */}
-                      <div className="flex justify-between items-center border-b-2 border-gray-300 pb-2 font-bold">
-                        <span className="font-mono text-[#1A1A1A]">항목</span>
-                        <div className="flex items-center gap-4">
-                          <span className="font-mono text-gray-600">등급</span>
-                          <span className="font-mono text-gray-600">비고</span>
-                        </div>
+                      <div className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-center border-b-2 border-gray-300 pb-2 font-bold gap-2">
+                        <span className="font-mono text-[#1A1A1A] text-left">항목</span>
+                        <span className="font-mono text-gray-600 text-right">등급</span>
+                        <span className="font-mono text-gray-600 text-right">비고</span>
                       </div>
                       {result.receipt_header.items.map((item: any, index: number) => (
-                        <div key={index} className="flex justify-between items-center border-b border-gray-200 pb-2">
-                          <span className="font-mono text-[#1A1A1A]">{item.name}</span>
-                          <div className="flex items-center gap-4">
-                            <span className="font-mono text-gray-600">{item.qty}</span>
-                            <span className="font-mono text-[#FF3B30] font-bold whitespace-nowrap">{item.price}</span>
-                          </div>
+                        <div key={index} className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-center border-b border-gray-200 pb-2 gap-2">
+                          <span className="font-mono text-[#1A1A1A] text-left truncate">{item.name}</span>
+                          <span className="font-mono text-gray-600 text-right">{item.qty}</span>
+                          <span className="font-mono text-[#FF3B30] font-bold text-right truncate">{item.price}</span>
                         </div>
                       ))}
                     </div>
