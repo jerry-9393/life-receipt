@@ -48,6 +48,7 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [loadingMessage, setLoadingMessage] = useState("");
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState(false);
 
   // 로딩 메시지 롤링
   useEffect(() => {
@@ -123,14 +124,46 @@ export default function Home() {
     if (!element) return;
 
     try {
+      // 고해상도 캡처
       const canvas = await html2canvas(element, {
         backgroundColor: "#F4F4F0",
-        scale: 2,
+        scale: 3,
+        useCORS: true,
+        allowTaint: true,
       });
-      const imageData = canvas.toDataURL("image/png");
-      setCapturedImage(imageData);
+      
+      // Blob으로 변환
+      canvas.toBlob(async (blob) => {
+        if (!blob) {
+          console.error("이미지 변환 실패");
+          return;
+        }
+
+        const file = new File([blob], "인생견적서.png", { type: "image/png" });
+        const imageData = canvas.toDataURL("image/png");
+        setCapturedImage(imageData);
+
+        // Web Share API 시도 (모바일)
+        if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+          try {
+            await navigator.share({
+              files: [file],
+              title: "인생 견적서",
+              text: "내 인생 견적서를 확인해보세요!",
+            });
+            return; // 공유 성공 시 모달 띄우지 않음
+          } catch (shareError) {
+            // 공유 취소 또는 실패 시 모달로 폴백
+            console.log("공유 취소 또는 실패:", shareError);
+          }
+        }
+
+        // Web Share API가 지원되지 않거나 실패한 경우 모달 띄우기
+        setShowModal(true);
+      }, "image/png");
     } catch (error) {
       console.error("캡처 실패:", error);
+      alert("이미지 저장에 실패했습니다.");
     }
   };
 
@@ -146,6 +179,11 @@ export default function Home() {
     setMbti(null);
     setResult(null);
     setCapturedImage(null);
+    setShowModal(false);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
   };
 
   // 입력 페이지
@@ -627,11 +665,35 @@ export default function Home() {
             </button>
           </div>
 
-          {/* 캡처된 이미지 */}
-          {capturedImage && (
-            <div className="mt-8 text-center">
-              <p className="text-sm text-gray-600 mb-2">저장된 이미지:</p>
-              <img src={capturedImage} alt="저장된 영수증" className="max-w-full h-auto mx-auto border border-gray-300 rounded-lg" />
+          {/* 이미지 저장 모달 */}
+          {showModal && capturedImage && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4" onClick={handleCloseModal}>
+              <div className="bg-white rounded-lg max-w-md w-full p-6 space-y-4" onClick={(e) => e.stopPropagation()}>
+                <div className="text-center">
+                  <h3 className="text-lg font-bold text-[#1A1A1A] mb-2" style={{ letterSpacing: "-0.5px" }}>
+                    이미지 저장
+                  </h3>
+                  <p className="text-sm text-gray-600 mb-4">
+                    이미지를 꾹 눌러서 저장하세요
+                  </p>
+                  <div className="border-2 border-gray-200 rounded-lg p-2 bg-gray-50">
+                    <img 
+                      src={capturedImage} 
+                      alt="저장된 영수증" 
+                      className="w-full h-auto rounded"
+                      style={{ userSelect: "none" }}
+                    />
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCloseModal}
+                  className="w-full bg-[#FF3B30] text-white px-6 py-3 rounded-lg font-bold hover:bg-[#E6342A] transition-colors"
+                  style={{ letterSpacing: "-0.5px" }}
+                >
+                  닫기
+                </button>
+              </div>
             </div>
           )}
         </div>
