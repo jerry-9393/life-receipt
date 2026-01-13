@@ -501,10 +501,10 @@ export default function Home() {
                         <span className="font-mono text-gray-600 text-right">비고</span>
                       </div>
                       {result.receipt_header.items.map((item: any, index: number) => (
-                        <div key={index} className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-center border-b border-gray-200 pb-2 gap-2">
+                        <div key={index} className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-start border-b border-gray-200 pb-2 gap-2">
                           <span className="font-mono text-[#1A1A1A] text-left truncate">{item.name}</span>
-                          <span className="font-mono text-gray-600 text-right">{item.qty}</span>
-                          <span className="font-mono text-[#FF3B30] font-bold text-right truncate">{item.price}</span>
+                          <span className="font-mono text-gray-600 text-right whitespace-nowrap">{item.qty}</span>
+                          <span className="font-mono text-[#FF3B30] font-bold text-right leading-tight">{item.price}</span>
                         </div>
                       ))}
                     </div>
