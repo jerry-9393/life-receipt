@@ -432,20 +432,22 @@ export default function Home() {
               {/* 영수증 헤더 - 안전한 조건부 렌더링 */}
               {result && result.receipt_header && (
                 <div className="border-t-2 border-dashed border-gray-400 pt-4">
-                  <div className="bg-[#FF3B30] text-white p-4 rounded-lg mb-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-lg font-medium" style={{ letterSpacing: "-0.5px" }}>
+                  <div className="bg-[#FF3B30] text-white p-4 rounded-lg mb-4 space-y-4">
+                    {/* 별명 */}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center text-center md:text-left gap-1 md:gap-0">
+                      <span className="text-xs text-red-100 md:text-lg md:font-medium" style={{ letterSpacing: "-0.5px" }}>
                         사주+MBTI 별명:
                       </span>
-                      <span className="text-2xl font-bold text-right" style={{ letterSpacing: "-0.5px" }}>
+                      <span className="text-lg md:text-2xl font-bold break-keep md:text-right" style={{ letterSpacing: "-0.5px" }}>
                         {result?.receipt_header?.type_name || "타입명 없음"}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-base font-medium" style={{ letterSpacing: "-0.5px" }}>
+                    {/* 한줄평 */}
+                    <div className="flex flex-col md:flex-row md:justify-between md:items-center text-center md:text-left gap-1 md:gap-0">
+                      <span className="text-xs text-red-100 md:text-base md:font-medium" style={{ letterSpacing: "-0.5px" }}>
                         사주+MBTI 한줄평:
                       </span>
-                      <span className="text-lg font-mono text-right">
+                      <span className="text-base md:text-lg font-mono break-keep md:text-right">
                         {result?.receipt_header?.total_score || "평가 없음"}
                       </span>
                     </div>
