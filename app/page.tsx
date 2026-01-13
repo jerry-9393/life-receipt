@@ -500,14 +500,14 @@ export default function Home() {
                   {result.receipt_header?.items && result.receipt_header.items.length > 0 && (
                     <div className="bg-white rounded-lg p-4 space-y-2">
                       {/* 헤더 */}
-                      <div className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-center border-b border-slate-100 pb-2 font-bold gap-2">
-                        <span className="text-slate-700 text-left">항목</span>
+                      <div className="grid grid-cols-[auto_60px_1fr] md:grid-cols-[1fr_120px_180px] items-center border-b border-slate-100 pb-2 font-bold gap-2 md:gap-2">
+                        <span className="text-slate-700 text-left min-w-[80px]">항목</span>
                         <span className="text-slate-600 text-right text-sm">등급</span>
                         <span className="text-slate-600 text-right text-sm">비고</span>
                       </div>
                       {result.receipt_header.items.map((item: any, index: number) => (
-                        <div key={index} className="grid grid-cols-[1fr_90px_140px] md:grid-cols-[1fr_120px_180px] items-start border-b border-slate-50 pb-2 gap-2">
-                          <span className="text-slate-800 text-left truncate font-medium">{item.name}</span>
+                        <div key={index} className="grid grid-cols-[auto_60px_1fr] md:grid-cols-[1fr_120px_180px] items-start border-b border-slate-50 pb-2 gap-2 md:gap-2">
+                          <span className="text-slate-800 text-left whitespace-nowrap font-medium min-w-[80px]">{item.name}</span>
                           <span className="text-slate-600 text-right whitespace-nowrap text-sm">{item.qty}</span>
                           <span className="text-violet-600 font-semibold text-right leading-tight text-sm">{item.price}</span>
                         </div>
