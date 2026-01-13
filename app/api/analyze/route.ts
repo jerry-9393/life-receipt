@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import OpenAI from "openai";
+import { sql } from '@vercel/postgres';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -49,7 +50,7 @@ function calculateSaju(birthDate: string) {
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, birthDate, birthTime, mbti } = body;
+    const { name, birthDate, birthTime, gender, mbti } = body;
 
     // 1. 진짜 사주 계산 (여기서 매번 달라짐)
     const sajuResult = calculateSaju(birthDate);
@@ -136,6 +137,19 @@ export async function POST(req: Request) {
     });
 
     const result = JSON.parse(completion.choices[0].message.content || "{}");
+    
+    // DB 저장 (에러가 나도 메인 로직 방해하지 않도록 try-catch로 감싸기)
+    try {
+      await sql`
+        INSERT INTO analysis_results (name, birth_date, birth_time, gender, mbti, result_json)
+        VALUES (${name}, ${birthDate}, ${birthTime || null}, ${gender}, ${mbti || null}, ${JSON.stringify(result)}::jsonb)
+      `;
+      console.log('✅ DB 저장 성공');
+    } catch (dbError) {
+      console.error('❌ DB 저장 실패 (사용자에게는 결과 표시):', dbError);
+      // DB 저장 실패해도 사용자에게는 결과를 보여줌
+    }
+    
     return NextResponse.json(result);
 
   } catch (error) {

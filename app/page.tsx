@@ -89,6 +89,7 @@ export default function Home() {
           name,
           birthDate,
           birthTime,
+          gender,
           mbti: mbti || null,
         }),
       });
@@ -188,7 +189,7 @@ export default function Home() {
 
   // 입력 페이지
   if (pageState === "input") {
-    return (
+  return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 p-4 md:p-8">
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
@@ -702,8 +703,8 @@ export default function Home() {
             </div>
           )}
         </div>
-      </div>
-    );
+    </div>
+  );
   }
 
   return null;
