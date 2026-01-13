@@ -104,9 +104,6 @@ export default function Home() {
       console.log("receipt_header 존재:", !!data.receipt_header);
       console.log("detail_analysis 존재:", !!data.detail_analysis);
       
-      // 디버깅용 alert - API 응답을 받자마자 실행
-      alert("API 응답 받음:\n" + JSON.stringify(data, null, 2));
-      
       setResult(data);
       
       // 로딩 후 결과 페이지로
