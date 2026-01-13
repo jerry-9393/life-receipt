@@ -193,7 +193,7 @@ export default function Home() {
         <div className="max-w-2xl mx-auto">
           <div className="text-center mb-8">
             <h1 className="text-4xl md:text-5xl font-bold text-[#1A1A1A] mb-4 tracking-tight" style={{ letterSpacing: "-0.5px" }}>
-              사주+MBTI 분석석
+              사주+MBTI 분석
             </h1>
           </div>
 
