@@ -1,3 +1,4 @@
+import 'dotenv/config'; 
 import { sql } from '@vercel/postgres';
 
 async function createTable() {
