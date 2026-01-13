@@ -433,11 +433,21 @@ export default function Home() {
               {result && result.receipt_header && (
                 <div className="border-t-2 border-dashed border-gray-400 pt-4">
                   <div className="bg-[#FF3B30] text-white p-4 rounded-lg mb-4">
-                    <div className="text-2xl font-bold mb-2" style={{ letterSpacing: "-0.5px" }}>
-                      {result.receipt_header?.type_name || "타입명 없음"}
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-lg font-medium" style={{ letterSpacing: "-0.5px" }}>
+                        사주+MBTI 별명:
+                      </span>
+                      <span className="text-2xl font-bold text-right" style={{ letterSpacing: "-0.5px" }}>
+                        {result?.receipt_header?.type_name || "타입명 없음"}
+                      </span>
                     </div>
-                    <div className="text-lg font-mono">
-                      {result.receipt_header?.total_score || "평가 없음"}
+                    <div className="flex justify-between items-center">
+                      <span className="text-base font-medium" style={{ letterSpacing: "-0.5px" }}>
+                        사주+MBTI 한줄평:
+                      </span>
+                      <span className="text-lg font-mono text-right">
+                        {result?.receipt_header?.total_score || "평가 없음"}
+                      </span>
                     </div>
                   </div>
                   
